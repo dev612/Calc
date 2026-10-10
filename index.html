@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f1">
+  <meta name="description" content="A simple age calculator. Enter a date of birth to see your age and days lived.">
+  <title>Calc — Age calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202a27;
+      --muted: #697570;
+      --line: #e2e7e1;
+      --paper: #fff;
+      --canvas: #f5f5f1;
+      --green: #416b58;
+      --green-dark: #315343;
+      --mint: #eaf2ec;
+      --orange: #d5794b;
+      font-family: "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(ellipse at 50% -20%, #e8eee6 0, transparent 52%), var(--canvas);
+    }
+    .page { width: min(100% - 40px, 940px); margin: 0 auto; padding: 34px 0 48px; }
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-size: 18px; font-weight: 750; letter-spacing: -.04em; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; color: #fff; background: var(--green); font-size: 18px; font-weight: 500; }
+    .header-note { color: var(--muted); font-size: 13px; }
+    main { max-width: 760px; margin: 0 auto; }
+    .intro { margin: 0 auto 32px; max-width: 620px; text-align: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 17px; height: 1px; background: var(--green); }
+    h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 7vw, 64px); font-weight: 400; letter-spacing: -.055em; line-height: 1.02; }
+    .intro p { max-width: 450px; margin: 18px auto 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
+    .calculator { padding: 28px; border: 1px solid #e9ece7; border-radius: 20px; background: var(--paper); box-shadow: 0 16px 50px #26352c0b, 0 2px 8px #26352c08; }
+    .form-row { display: flex; align-items: end; gap: 14px; }
+    .field { flex: 1; min-width: 0; }
+    label { display: block; margin-bottom: 9px; font-size: 13px; font-weight: 650; }
+    input[type="date"] { width: 100%; min-height: 52px; padding: 0 14px; border: 1px solid #dce2dc; border-radius: 10px; color: var(--ink); background: #fff; font: inherit; font-size: 15px; outline: none; transition: border-color .18s, box-shadow .18s; }
+    input[type="date"]:focus { border-color: var(--green); box-shadow: 0 0 0 3px #416b581c; }
+    button { min-height: 52px; padding: 0 22px; border: 0; border-radius: 10px; color: white; background: var(--green); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .18s, transform .18s; }
+    button:hover { background: var(--green-dark); transform: translateY(-1px); }
+    button:focus-visible { outline: 3px solid #8eac98; outline-offset: 3px; }
+    .hint { min-height: 20px; margin: 12px 2px 0; color: var(--muted); font-size: 12px; }
+    .hint.error { color: #ad492e; }
+    .result { display: none; margin-top: 20px; overflow: hidden; border: 1px solid #dae6dd; border-radius: 16px; background: linear-gradient(135deg, #f1f6f1, #fbfcfa 70%); animation: rise .35s ease-out both; }
+    .result.visible { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .result-top { padding: 25px 27px 22px; border-bottom: 1px solid #e0e9e1; }
+    .result-label { color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+    .age { margin-top: 8px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(27px, 5vw, 39px); letter-spacing: -.04em; line-height: 1.25; }
+    .age span { color: var(--green-dark); font-weight: 500; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; }
+    .stat { padding: 18px 27px 20px; }
+    .stat + .stat { border-left: 1px solid #e0e9e1; }
+    .stat strong { display: block; font-size: 19px; font-weight: 700; letter-spacing: -.03em; }
+    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+    footer { margin-top: 30px; color: #87918c; font-size: 12px; text-align: center; }
+    @media (max-width: 600px) {
+      .page { width: min(100% - 28px, 940px); padding-top: 22px; }
+      header { margin-bottom: 56px; }
+      .header-note { font-size: 11px; }
+      .calculator { padding: 19px; border-radius: 16px; }
+      .form-row { align-items: stretch; flex-direction: column; gap: 12px; }
+      button { width: 100%; }
+      .result-top { padding: 21px 20px 18px; }
+      .stat { padding: 16px 20px 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a class="brand" href="#" aria-label="Calc home"><span class="brand-mark" aria-hidden="true">+</span>calc</a>
+      <span class="header-note">A little clarity, by the numbers.</span>
+    </header>
+    <main>
+      <section class="intro" aria-labelledby="title">
+        <div class="eyebrow">Age calculator</div>
+        <h1 id="title">Every year adds up.</h1>
+        <p>Enter your date of birth to see your age, down to the day.</p>
+      </section>
+      <section class="calculator" aria-label="Calculate your age">
+        <form id="age-form" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="birthdate">Your date of birth</label>
+              <input id="birthdate" name="birthdate" type="date" required autocomplete="bday">
+            </div>
+            <button type="submit">Calculate age <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="hint" id="hint" aria-live="polite">Your date stays in your browser and is never sent anywhere.</p>
+        </form>
+        <section class="result" id="result" aria-live="polite" aria-label="Your age result">
+          <div class="result-top">
+            <div class="result-label">Your age today</div>
+            <div class="age" id="age"></div>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong id="days-lived"></strong><span>days lived</span></div>
+            <div class="stat"><strong id="next-birthday"></strong><span id="birthday-caption">until your next birthday</span></div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer>Calculated using calendar dates, so time zones won’t change your result.</footer>
+  </div>
+  <script>
+    (() => {
+      const form = document.querySelector('#age-form');
+      const input = document.querySelector('#birthdate');
+      const hint = document.querySelector('#hint');
+      const result = document.querySelector('#result');
+      const ageOutput = document.querySelector('#age');
+      const daysOutput = document.querySelector('#days-lived');
+      const birthdayOutput = document.querySelector('#next-birthday');
+      const birthdayCaption = document.querySelector('#birthday-caption');
+      const DAY = 24 * 60 * 60 * 1000;
+
+      const utcDate = (year, month, day) => new Date(Date.UTC(year, month, day));
+      const addMonths = (date, count) => {
+        const monthStart = utcDate(date.getUTCFullYear(), date.getUTCMonth() + count, 1);
+        const lastDay = utcDate(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 0).getUTCDate();
+        return utcDate(monthStart.getUTCFullYear(), monthStart.getUTCMonth(), Math.min(date.getUTCDate(), lastDay));
+      };
+      const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
+      const formatDate = date => new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', timeZone: 'UTC' }).format(date);
+
+      const todayLocal = new Date();
+      const today = utcDate(todayLocal.getFullYear(), todayLocal.getMonth(), todayLocal.getDate());
+      const isoToday = `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, '0')}-${String(today.getUTCDate()).padStart(2, '0')}`;
+      input.max = isoToday;
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        hint.classList.remove('error');
+        const value = input.value;
+        if (!value) {
+          hint.textContent = 'Choose your date of birth to calculate your age.';
+          hint.classList.add('error');
+          input.focus();
+          result.classList.remove('visible');
+          return;
+        }
+
+        const [year, month, day] = value.split('-').map(Number);
+        const birth = utcDate(year, month - 1, day);
+        if (birth.getUTCFullYear() !== year || birth.getUTCMonth() !== month - 1 || birth.getUTCDate() !== day || birth > today) {
+          hint.textContent = 'Enter a valid date that is today or earlier.';
+          hint.classList.add('error');
+          input.focus();
+          result.classList.remove('visible');
+          return;
+        }
+
+        let years = today.getUTCFullYear() - year;
+        let anniversary = utcDate(year + years, month - 1, Math.min(day, utcDate(year + years, month, 0).getUTCDate()));
+        if (anniversary > today) {
+          years -= 1;
+          anniversary = utcDate(year + years, month - 1, Math.min(day, utcDate(year + years, month, 0).getUTCDate()));
+        }
+
+        let months = (today.getUTCFullYear() - anniversary.getUTCFullYear()) * 12 + today.getUTCMonth() - anniversary.getUTCMonth();
+        if (addMonths(anniversary, months) > today) months -= 1;
+        const monthMark = addMonths(anniversary, months);
+        const days = Math.floor((today - monthMark) / DAY);
+        const thisYearBirthday = utcDate(today.getUTCFullYear(), month - 1, Math.min(day, utcDate(today.getUTCFullYear(), month, 0).getUTCDate()));
+        const birthdayYear = thisYearBirthday >= today ? today.getUTCFullYear() : today.getUTCFullYear() + 1;
+        const nextBirthday = utcDate(birthdayYear, month - 1, Math.min(day, utcDate(birthdayYear, month, 0).getUTCDate()));
+        const daysUntil = Math.round((nextBirthday - today) / DAY);
+        const totalDays = Math.round((today - birth) / DAY);
+
+        ageOutput.innerHTML = `<span>${plural(years, 'year')}</span>, <span>${plural(months, 'month')}</span> and <span>${plural(days, 'day')}</span>`;
+        daysOutput.textContent = totalDays.toLocaleString();
+        if (daysUntil === 0) {
+          birthdayOutput.textContent = 'Today!';
+          birthdayCaption.textContent = 'happy birthday';
+        } else {
+          birthdayOutput.textContent = `${plural(daysUntil, 'day')} · ${formatDate(nextBirthday)}`;
+          birthdayCaption.textContent = 'until your next birthday';
+        }
+        hint.textContent = 'Your date stays in your browser and is never sent anywhere.';
+        result.classList.remove('visible');
+        requestAnimationFrame(() => result.classList.add('visible'));
+      });
+    })();
+  </script>
+</body>
+</html>
