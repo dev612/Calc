@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f5f1">
+  <meta name="theme-color" content="#0b1424">
   <meta name="description" content="A simple age calculator. Enter a date of birth to see your age and days lived.">
   <title>Calc — Age calculator</title>
   <style>
     :root {
-      color-scheme: light;
-      --ink: #202a27;
-      --muted: #697570;
-      --line: #e2e7e1;
-      --paper: #fff;
-      --canvas: #f5f5f1;
-      --green: #416b58;
-      --green-dark: #315343;
-      --mint: #eaf2ec;
-      --orange: #d5794b;
+      color-scheme: dark;
+      --ink: #e8eef8;
+      --muted: #a0aec2;
+      --line: #273750;
+      --paper: #111f34;
+      --canvas: #0b1424;
+      --green: #4f8cff;
+      --green-dark: #78a8ff;
+      --mint: #172a46;
+      --orange: #f29a76;
       font-family: "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
     * { box-sizing: border-box; }
@@ -26,7 +26,7 @@
       min-height: 100vh;
       margin: 0;
       color: var(--ink);
-      background: radial-gradient(ellipse at 50% -20%, #e8eee6 0, transparent 52%), var(--canvas);
+      background: radial-gradient(ellipse at 50% -20%, #1b3760 0, transparent 56%), var(--canvas);
     }
     .page { width: min(100% - 40px, 940px); margin: 0 auto; padding: 34px 0 48px; }
     header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 72px; }
@@ -39,30 +39,30 @@
     .eyebrow::before { content: ""; width: 17px; height: 1px; background: var(--green); }
     h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 7vw, 64px); font-weight: 400; letter-spacing: -.055em; line-height: 1.02; }
     .intro p { max-width: 450px; margin: 18px auto 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
-    .calculator { padding: 28px; border: 1px solid #e9ece7; border-radius: 20px; background: var(--paper); box-shadow: 0 16px 50px #26352c0b, 0 2px 8px #26352c08; }
+    .calculator { padding: 28px; border: 1px solid #263752; border-radius: 20px; background: var(--paper); box-shadow: 0 20px 60px #0008, 0 2px 8px #0003; }
     .form-row { display: flex; align-items: end; gap: 14px; }
     .field { flex: 1; min-width: 0; }
     label { display: block; margin-bottom: 9px; font-size: 13px; font-weight: 650; }
-    input[type="date"] { width: 100%; min-height: 52px; padding: 0 14px; border: 1px solid #dce2dc; border-radius: 10px; color: var(--ink); background: #fff; font: inherit; font-size: 15px; outline: none; transition: border-color .18s, box-shadow .18s; }
-    input[type="date"]:focus { border-color: var(--green); box-shadow: 0 0 0 3px #416b581c; }
+    input[type="date"] { width: 100%; min-height: 52px; padding: 0 14px; border: 1px solid #344866; border-radius: 10px; color: var(--ink); background: #0c192b; color-scheme: dark; font: inherit; font-size: 15px; outline: none; transition: border-color .18s, box-shadow .18s; }
+    input[type="date"]:focus { border-color: var(--green); box-shadow: 0 0 0 3px #4f8cff30; }
     button { min-height: 52px; padding: 0 22px; border: 0; border-radius: 10px; color: white; background: var(--green); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .18s, transform .18s; }
-    button:hover { background: var(--green-dark); transform: translateY(-1px); }
-    button:focus-visible { outline: 3px solid #8eac98; outline-offset: 3px; }
+    button:hover { background: #3c78e8; transform: translateY(-1px); }
+    button:focus-visible { outline: 3px solid #8ab4ff; outline-offset: 3px; }
     .hint { min-height: 20px; margin: 12px 2px 0; color: var(--muted); font-size: 12px; }
-    .hint.error { color: #ad492e; }
-    .result { display: none; margin-top: 20px; overflow: hidden; border: 1px solid #dae6dd; border-radius: 16px; background: linear-gradient(135deg, #f1f6f1, #fbfcfa 70%); animation: rise .35s ease-out both; }
+    .hint.error { color: #ff967e; }
+    .result { display: none; margin-top: 20px; overflow: hidden; border: 1px solid #2d4668; border-radius: 16px; background: linear-gradient(135deg, #172b48, #122239 70%); animation: rise .35s ease-out both; }
     .result.visible { display: block; }
     @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .result-top { padding: 25px 27px 22px; border-bottom: 1px solid #e0e9e1; }
+    .result-top { padding: 25px 27px 22px; border-bottom: 1px solid #2b4160; }
     .result-label { color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
     .age { margin-top: 8px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(27px, 5vw, 39px); letter-spacing: -.04em; line-height: 1.25; }
-    .age span { color: var(--green-dark); font-weight: 500; }
+    .age span { color: #8bb4ff; font-weight: 500; }
     .stats { display: grid; grid-template-columns: 1fr 1fr; }
     .stat { padding: 18px 27px 20px; }
-    .stat + .stat { border-left: 1px solid #e0e9e1; }
+    .stat + .stat { border-left: 1px solid #2b4160; }
     .stat strong { display: block; font-size: 19px; font-weight: 700; letter-spacing: -.03em; }
     .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
-    footer { margin-top: 30px; color: #87918c; font-size: 12px; text-align: center; }
+    footer { margin-top: 30px; color: #8292aa; font-size: 12px; text-align: center; }
     @media (max-width: 600px) {
       .page { width: min(100% - 28px, 940px); padding-top: 22px; }
       header { margin-bottom: 56px; }
